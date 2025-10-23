@@ -1,0 +1,12 @@
+# Code Owners for Coding Machine Dashboard
+
+# Default owner for everything
+* @Bernhard-Reiter
+
+# Workflow configurations require review
+/.github/workflows/ @Bernhard-Reiter
+
+# Production configuration files
+/vercel.json @Bernhard-Reiter
+/.npmrc @Bernhard-Reiter
+/next.config.ts @Bernhard-Reiter

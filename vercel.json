@@ -1,0 +1,29 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "installCommand": "npm ci --prefer-offline",
+  "ignoreCommand": "git diff HEAD^ HEAD --quiet -- '*.md' 'docs/**' '.github/**'",
+  "github": {
+    "silent": true
+  },
+  "functions": {
+    "app/api/**/*.ts": {
+      "maxDuration": 10
+    }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Build-SHA",
+          "value": "dashboard-clean"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    }
+  ]
+}
