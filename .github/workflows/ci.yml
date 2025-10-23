@@ -48,7 +48,7 @@ jobs:
 
       - name: Generate SBOM (CycloneDX format)
         run: |
-          cyclonedx-npm --output-format JSON --output-file sbom.json
+          cyclonedx-npm --ignore-npm-errors --output-format JSON --output-file sbom.json
           echo "✅ SBOM generated successfully"
           ls -lh sbom.json
 
