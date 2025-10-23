@@ -1,0 +1,143 @@
+# Dependabot Configuration for dashboard-hardened
+# Automated dependency updates for npm and GitHub Actions
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # =====================================
+  # NPM Dependencies (Next.js 15, React 19, Playwright)
+  # =====================================
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Berlin"
+
+    # Grouping Strategy
+    groups:
+      # Group all minor and patch updates together
+      dependencies-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+        patterns:
+          - "*"
+
+      # Separate major updates for careful review
+      # (No grouping - each major update gets its own PR)
+
+    # Labels for PR categorization
+    labels:
+      - "dependencies"
+      - "automated"
+      - "npm"
+
+    # Limit concurrent PRs to avoid overwhelming reviewers
+    open-pull-requests-limit: 5
+
+    # Target branch
+    target-branch: "main"
+
+    # Automatically rebase PRs when needed
+    rebase-strategy: "auto"
+
+    # Versioning strategy
+    versioning-strategy: "auto"
+
+    # Commit message configuration
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+
+    # Ignore specific dependencies (if needed)
+    # ignore:
+    #   - dependency-name: "react"
+    #     update-types: ["version-update:semver-major"]
+
+    # Allow indirect dependencies (transitive deps)
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+
+    # Reviewers (optional - add your team members)
+    # reviewers:
+    #   - "your-team"
+
+    # Assignees (optional)
+    # assignees:
+    #   - "your-username"
+
+  # =====================================
+  # GitHub Actions Updates
+  # =====================================
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Berlin"
+
+    # Group all GitHub Actions updates together
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+    # Labels for GitHub Actions PRs
+    labels:
+      - "dependencies"
+      - "automated"
+      - "github-actions"
+
+    # Limit open PRs
+    open-pull-requests-limit: 2
+
+    # Target branch
+    target-branch: "main"
+
+    # Commit message configuration
+    commit-message:
+      prefix: "chore(ci)"
+      include: "scope"
+
+# =====================================
+# Configuration Notes
+# =====================================
+#
+# **Update Schedule**:
+# - Runs every Monday at 9:00 AM (Europe/Berlin)
+# - Weekly schedule balances freshness with review burden
+#
+# **Grouping Strategy**:
+# - Minor/Patch updates: Grouped into 1 PR for efficiency
+# - Major updates: Individual PRs for careful review
+# - GitHub Actions: Grouped together
+#
+# **PR Limits**:
+# - npm: Max 5 open PRs (prevents overwhelming the team)
+# - GitHub Actions: Max 2 open PRs
+#
+# **Security Updates**:
+# - Dependabot also creates security updates automatically
+# - These are separate from version updates and run daily
+#
+# **Best Practices Applied**:
+# 1. Semantic commit messages (chore(deps), chore(ci))
+# 2. Automatic rebasing to stay up-to-date
+# 3. Labeled PRs for easy filtering
+# 4. Timezone-aware scheduling
+# 5. Both direct and indirect dependencies monitored
+#
+# **Next Steps After Enabling**:
+# 1. Enable Dependabot in GitHub Settings → Security → Dependabot
+# 2. Configure branch protection rules for main
+# 3. Set up auto-merge for trusted minor/patch updates (optional)
+# 4. Monitor first few PRs and adjust grouping if needed
+#
+# **Auto-Merge Example** (GitHub CLI):
+# gh pr list --label "dependencies" --json number --jq '.[].number' | \
+#   xargs -I {} gh pr merge {} --auto --squash
+#
