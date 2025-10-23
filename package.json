@@ -15,6 +15,9 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
+  "overrides": {
+    "picomatch": "4.0.3"
+  },
   "devDependencies": {
     "@playwright/test": "^1.49.1",
     "@types/aria-query": "^5.0.4",
