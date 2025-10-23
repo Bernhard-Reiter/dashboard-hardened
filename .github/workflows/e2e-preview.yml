@@ -3,6 +3,11 @@ name: E2E Tests on Preview
 on:
   deployment_status:
 
+permissions:
+  contents: read      # Required for actions/checkout
+  deployments: read   # Required for deployment_status event
+  actions: read       # Required for artifact upload
+
 jobs:
   e2e:
     if: github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Preview'
