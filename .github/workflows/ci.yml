@@ -55,7 +55,7 @@ jobs:
       # Security: Vulnerability Scanning
       - name: Install OSV Scanner
         run: |
-          curl -L -o osv-scanner https://github.com/google/osv-scanner/releases/download/v2.2.3/osv-scanner_2.2.3_linux_amd64
+          curl -L -o osv-scanner https://github.com/google/osv-scanner/releases/download/v2.2.3/osv-scanner_linux_amd64
           chmod +x osv-scanner
           sudo mv osv-scanner /usr/local/bin/
           osv-scanner --version
