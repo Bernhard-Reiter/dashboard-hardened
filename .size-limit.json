@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Client bundle (main)",
+    "path": ".next/static/**/*.js",
+    "limit": "200 KB",
+    "webpack": false,
+    "gzip": true
+  },
+  {
+    "name": "Total bundle size",
+    "path": ".next/**/*.js",
+    "limit": "400 KB",
+    "webpack": false,
+    "gzip": true
+  }
+]
