@@ -7,8 +7,28 @@ Sentry.init({
   environment: process.env.VERCEL_ENV ?? process.env.NODE_ENV,
   release: process.env.SENTRY_RELEASE ?? process.env.VERCEL_GIT_COMMIT_SHA,
 
-  // Adjust this value in production, or use tracesSampler for greater control
-  tracesSampleRate: process.env.NODE_ENV === "production" ? 0.1 : 1.0,
+  // Flexible sampling via env var (default: 0.1 prod, 1.0 dev)
+  tracesSampleRate: Number(
+    process.env.SENTRY_TRACES_SAMPLE_RATE ??
+      (process.env.NODE_ENV === "production" ? "0.1" : "1.0")
+  ),
+
+  // Filter known noise patterns
+  ignoreErrors: [
+    // Network/timeout errors (usually transient)
+    "ECONNREFUSED",
+    "ETIMEDOUT",
+    "ENOTFOUND",
+  ],
+
+  beforeSend(event) {
+    // Filter health check pings
+    if (event.request?.url?.includes("/api/health")) {
+      return null;
+    }
+
+    return event;
+  },
 
   // Setting this option to true will print useful information to the console while you're setting up Sentry.
   debug: false,
