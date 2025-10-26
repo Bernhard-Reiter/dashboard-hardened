@@ -1,0 +1,58 @@
+name: Synthetic Health Check
+
+on:
+  schedule:
+    # Run every 5 minutes
+    - cron: "*/5 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      # TODO: Set HEALTHCHECK_URL in GitHub Repository Secrets
+      # Example: https://your-app.vercel.app/api/health
+      URL: ${{ secrets.HEALTHCHECK_URL }}
+
+      # TODO: Set SLACK_WEBHOOK_URL in GitHub Repository Secrets
+      # Example: https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXX
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      TIMEOUT_S: 10
+      WARN_MS: 1500
+
+    steps:
+      - name: Ping /api/health
+        id: curl
+        run: |
+          START=$(date +%s%3N)
+          HTTP=$(curl -sS -o /tmp/resp.json -w "%{http_code}" --max-time $TIMEOUT_S "$URL") || HTTP=000
+          END=$(date +%s%3N)
+          RT=$((END-START))
+
+          echo "http=$HTTP" >> $GITHUB_OUTPUT
+          echo "rt=$RT" >> $GITHUB_OUTPUT
+
+          echo "Status: $HTTP"
+          echo "Response Time: ${RT}ms"
+          cat /tmp/resp.json || true
+
+      - name: Notify Slack on failure/slow response
+        if: ${{ steps.curl.outputs.http != '200' || fromJSON(steps.curl.outputs.rt) > fromJSON(env.WARN_MS) }}
+        run: |
+          STATUS="${{ steps.curl.outputs.http }}"
+          RT="${{ steps.curl.outputs.rt }}"
+
+          MSG=":rotating_light: **Health Check Alert**\n"
+          MSG="${MSG}URL: \`$URL\`\n"
+          MSG="${MSG}HTTP Status: \`$STATUS\`\n"
+          MSG="${MSG}Response Time: \`${RT}ms\`\n"
+          MSG="${MSG}Threshold: \`${WARN_MS}ms\`\n"
+          MSG="${MSG}Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+          curl -X POST \
+               -H 'Content-Type: application/json' \
+               --data "{\"text\":\"${MSG}\"}" \
+               "$SLACK_WEBHOOK_URL"
