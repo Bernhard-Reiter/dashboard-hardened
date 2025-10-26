@@ -84,26 +84,3 @@ Before deploying, configure these secrets:
 ### Testing
 
 The project will build successfully without secrets (with warnings). Set real values before deploying to production.
-
-## Sentry Alert Rules (Post-Deployment)
-
-After deploying with secrets, configure these alert rules in Sentry UI for actionable notifications:
-
-### 1. Error Rate Alert
-- **Condition:** Error rate > 5% in 5 minutes
-- **Channel:** Slack #alerts
-- **Purpose:** Detect sudden spikes in errors
-
-### 2. Performance Degradation
-- **Condition:** p95 Transaction Duration > 1000ms for 5 minutes
-- **Channel:** Slack #alerts
-- **Purpose:** Catch performance regressions
-
-### 3. Release Regression
-- **Condition:** New release has > 10 errors in first 10 minutes
-- **Channel:** Slack #alerts
-- **Purpose:** Fast rollback on bad deployments
-
-**Setup Location:** Sentry → Settings → Alerts → Create Alert Rule
-
-Document the exact thresholds in this README after configuring them.

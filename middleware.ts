@@ -1,17 +1,33 @@
+// middleware.ts
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
-// Matcher excludes static files, images, and favicon
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  // Statische Assets, Next-Interna und die Monitoring-Endpoint ausnehmen
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|monitoring).*)"],
 };
 
-export function middleware(request: NextRequest) {
-  const response = NextResponse.next();
+export function middleware(req: Request) {
+  const res = NextResponse.next();
 
-  // Generate unique request ID for tracing/correlation
-  const requestId = crypto.randomUUID();
-  response.headers.set("x-request-id", requestId);
+  // 1) Request-ID (nur setzen, wenn nicht bereits vorhanden)
+  const existing = (req.headers as any).get?.("x-request-id");
+  const requestId = existing ?? crypto.randomUUID();
+  res.headers.set("x-request-id", requestId);
 
-  return response;
+  // 2) Strikte CSP – mit First-Party Sentry Tunneling kompatibel (connect-src 'self')
+  //   - Keine externen Script/Connect-Quellen nötig, da /monitoring verwendet wird.
+  //   - 'unsafe-inline' bei style ist für Next.js nötig (Inline-CSS in <style>).
+  const csp = [
+    "default-src 'self'",
+    "frame-ancestors 'none'",
+    "connect-src 'self'",
+    "img-src 'self' data:",
+    "script-src 'self'",
+    "style-src 'self' 'unsafe-inline'",
+    "font-src 'self' data:",
+  ].join("; ");
+
+  res.headers.set("content-security-policy", csp);
+
+  return res;
 }

@@ -28,9 +28,7 @@ jobs:
         id: curl
         run: |
           START=$(date +%s%3N)
-          HTTP=$(curl -sS -o /tmp/resp.json -w "%{http_code}" \
-            -H "User-Agent: SyntheticHealthBot/1.0 (+github-actions)" \
-            --connect-timeout 3 --max-time $TIMEOUT_S "$URL") || HTTP=000
+          HTTP=$(curl -sS -o /tmp/resp.json -w "%{http_code}" --max-time $TIMEOUT_S "$URL") || HTTP=000
           END=$(date +%s%3N)
           RT=$((END-START))
 
