@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test:e2e": "playwright test",
-    "size": "size-limit"
+    "size": "size-limit",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.16",
@@ -20,6 +21,7 @@
     "picomatch": "4.0.3"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.0.0",
     "@playwright/test": "^1.49.1",
     "@size-limit/file": "^11.0.0",
     "@types/aria-query": "^5.0.4",
