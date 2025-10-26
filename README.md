@@ -34,3 +34,53 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Observability & Monitoring
+
+This project uses Sentry for error tracking and synthetic health checks via GitHub Actions.
+
+### Required Environment Variables
+
+Before deploying, configure these secrets:
+
+#### Vercel Environment Variables
+1. **Build-time** (needed for source map upload):
+   - `SENTRY_AUTH_TOKEN` - Sentry API authentication token
+   - `SENTRY_ORG` - Your Sentry organization slug
+   - `SENTRY_PROJECT` - Your Sentry project slug
+
+2. **Runtime** (needed for error reporting):
+   - `SENTRY_DSN` - Sentry Data Source Name for server-side
+   - `NEXT_PUBLIC_SENTRY_DSN` - Sentry DSN for client-side (public)
+
+#### GitHub Repository Secrets
+1. `HEALTHCHECK_URL` - Your production app URL (e.g., `https://your-app.vercel.app/api/health`)
+2. `SLACK_WEBHOOK_URL` - Slack webhook for health check alerts
+
+### Setup Steps
+
+1. **Create Sentry Project**:
+   - Go to [sentry.io](https://sentry.io) and create a new Next.js project
+   - Copy the DSN from Settings → Client Keys
+   - Generate an auth token from Settings → Account → API → Auth Tokens
+
+2. **Set Vercel Environment Variables**:
+   ```bash
+   vercel env add SENTRY_AUTH_TOKEN
+   vercel env add SENTRY_ORG
+   vercel env add SENTRY_PROJECT
+   vercel env add SENTRY_DSN
+   vercel env add NEXT_PUBLIC_SENTRY_DSN
+   ```
+
+3. **Set GitHub Secrets**:
+   - Go to repository Settings → Secrets and variables → Actions
+   - Add `HEALTHCHECK_URL` and `SLACK_WEBHOOK_URL`
+
+4. **Create Slack Webhook**:
+   - Go to your Slack workspace → Apps → Incoming Webhooks
+   - Create new webhook and copy the URL
+
+### Testing
+
+The project will build successfully without secrets (with warnings). Set real values before deploying to production.
