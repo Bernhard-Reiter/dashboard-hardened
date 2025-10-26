@@ -16,12 +16,16 @@ export const runtime = "edge";
  * - DSGVO-compliant by design
  */
 
-// OPTIONAL: Allowlist your public Sentry DSN keys
-// Extract from NEXT_PUBLIC_SENTRY_DSN: https://<publicKey>@...
-// Example: const ALLOWED_PUBLIC_KEYS = new Set(["abc123def456"]);
-const ALLOWED_PUBLIC_KEYS = new Set<string>([
-  // Add your public keys here for additional security
-]);
+// OPTIONAL: Allowlist your public Sentry DSN keys from environment variable
+// Set SENTRY_ALLOWED_PUBLIC_KEYS="key1,key2,key3" in Vercel environment settings
+// Extract public key from NEXT_PUBLIC_SENTRY_DSN: https://<publicKey>@...
+const allowedKeysEnv = process.env.SENTRY_ALLOWED_PUBLIC_KEYS || "";
+const ALLOWED_PUBLIC_KEYS = new Set<string>(
+  allowedKeysEnv
+    .split(",")
+    .map((k) => k.trim())
+    .filter(Boolean)
+);
 
 const MAX_ENVELOPE_BYTES = 200 * 1024; // 200 KB hard limit
 
