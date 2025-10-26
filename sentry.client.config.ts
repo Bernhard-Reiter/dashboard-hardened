@@ -7,6 +7,9 @@ Sentry.init({
   environment: process.env.VERCEL_ENV ?? process.env.NODE_ENV,
   release: process.env.SENTRY_RELEASE ?? process.env.VERCEL_GIT_COMMIT_SHA,
 
+  // Route events through /monitoring to bypass ad-blockers
+  tunnel: "/monitoring",
+
   // Flexible sampling via env var (default: 0.1 prod, 1.0 dev)
   tracesSampleRate: Number(
     process.env.NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE ??
