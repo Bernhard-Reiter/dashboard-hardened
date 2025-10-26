@@ -1,14 +1,22 @@
 [
   {
-    "name": "Client bundle (main)",
-    "path": ".next/static/**/*.js",
-    "limit": "250 KB",
-    "gzip": true
+    "name": "client (gz)",
+    "path": [
+      ".next/static/chunks/*.js",
+      ".next/static/chunks/app/**/*.js",
+      ".next/static/chunks/pages/**/*.js"
+    ],
+    "limit": "460 kB"
   },
   {
-    "name": "Total bundle size",
-    "path": ".next/**/*.js",
-    "limit": "460 KB",
-    "gzip": true
+    "name": "middleware edge (gz)",
+    "path": [
+      ".next/server/middleware.js",
+      ".next/server/middleware.mjs",
+      ".next/server/middleware.*.js",
+      ".next/server/app/**/_middleware*.js",
+      ".next/server/app/**/_middleware*.mjs"
+    ],
+    "limit": "50 kB"
   }
 ]
