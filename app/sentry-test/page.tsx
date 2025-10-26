@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import * as Sentry from "@sentry/nextjs";
+import { notFound } from "next/navigation";
 
 /**
  * Sentry Test Page
@@ -15,9 +16,13 @@ import * as Sentry from "@sentry/nextjs";
  * 4. Event routed through /monitoring tunnel (check Network tab)
  * 5. request_id tag present if using observability helpers
  *
- * After testing, remove this route or protect with auth.
+ * PRODUCTION SAFETY: Protected by NEXT_PUBLIC_ENABLE_SENTRY_TEST env var
  */
 export default function SentryTestPage() {
+  // Feature flag protection - only accessible if explicitly enabled
+  if (process.env.NEXT_PUBLIC_ENABLE_SENTRY_TEST !== "true") {
+    notFound();
+  }
   const [testResult, setTestResult] = useState<string>("");
 
   const triggerError = () => {
