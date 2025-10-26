@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.49.1",
+    "@size-limit/file": "^11.0.0",
     "@types/aria-query": "^5.0.4",
     "@types/node": "^20",
     "@types/react": "^19",
